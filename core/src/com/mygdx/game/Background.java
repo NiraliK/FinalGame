@@ -49,8 +49,11 @@ public class Background extends ApplicationAdapter {
     public int y;
 
     // for the player movement
+    // players x coordinate
     private float playerx;
+    // players y coordinate
     private float playery;
+    // to add to the player's x and y coordinates
     private float dx;
     private float dy;
     
