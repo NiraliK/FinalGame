@@ -1,10 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,8 +10,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -57,12 +53,15 @@ public class Background extends ApplicationAdapter {
     private float playery;
     private float dx;
     private float dy;
+    
     //image of the ball
     Texture img;
     
-    private boolean endGame;
+    // point system
+    // get the score of the game
     private int point;
     private String yourPointName;
+    // use the standard font to output the score
     BitmapFont font;
 
     @Override
@@ -153,18 +152,19 @@ public class Background extends ApplicationAdapter {
             }
         }
 
-        this.playerx = playerx;
-        this.playery = playery;
-
+        // set the x posiiton for the player to be on the block
         this.dx = 420;
+        // set the y position for the player
         this.dy = 30;
+        // get the image of the player
         img = new Texture("ball.png");
+        
+        // start the score at 0
         point = 0;
+        // output what the score is
         yourPointName = "Score: 0";
+        // set the font of the score
         font = new BitmapFont();
-        batch = new SpriteBatch();
-        endGame = false;
-
     }
 
     @Override
@@ -177,29 +177,37 @@ public class Background extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         
-        //move the camera with the player
+        // make sure the player is not off the screen to move the camera
         if (dy >= 0 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
             camera.position.y = (dy + 260) * 1;
             camera.position.y = camSpeed++;
-            endGame = false;
         }
-
+        // update the camera
         camera.update();
+        // set the camera in order to work
         batch.setProjectionMatrix(camera.combined);
 
+        // collision detection
+        // get the ball's x position
         int ballX = (int) ((img.getWidth() / 2) + dx);
+        // get the ball's y position
         int ballY = (int) ((img.getHeight() / 2) + dy);
+        // get the coordinates of the diamonds
         Coordinates tile = new Coordinates(-10, -10);
 
+        // check for any collisons
         for (int i = 0; i < coordinates.length; i++) {
+            // make sure the ball is on top of the diamond
             if (ballX >= coordinates[i].x && ballX <= coordinates[i].x + 100 && ballY >= coordinates[i].y && ballY <= coordinates[i].y + 100) {
                 tile.x = coordinates[i].x;
                 tile.y = coordinates[i].y;
+                // if the ball is not on a diamond then it fell off and the game ends
                 break;
             }
         }
 
-        //drawing the background and player
+        //drawing the background, player and score
         //begin the drawing here
         batch.begin();
         // use a for loop to go through the positions of the blocks
@@ -211,23 +219,42 @@ public class Background extends ApplicationAdapter {
             }
         }
 
+        // draw the player at the specified location
         batch.draw(img, dx, dy);
 
+        // movement for the player
+        // if the right key is pressed
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            // move the ball diagonally
+            // move it to the right
             this.dx += 1;
+            // move it up
             this.dy += 1;
+            // draw the ball at that new location
             batch.draw(img, dx, dy);
+            // add points to the score for every 100 coordinates it moves up
             point++;
             yourPointName = "Score: " + point / 100;
+            
+            // movement for the player if the left key is pressed
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            // move diagonally to the left
+            // move to the left
             this.dx += -1;
+            // move up 
             this.dy += 1;
+            // draw the ball at the new position
             batch.draw(img, dx, dy);
+            // add points to the score for every 100 coordinates it moves up
             point++;
             yourPointName = "Score: " + point / 100;
         }
+        // set the color of the score font
         font.setColor(0, 0, 0.2f, 1);
+        // output the score
         font.draw(batch, yourPointName, (camera.position.x) - 370, (camera.position.y) + 275);
+        
+        // move the player to it's new location depending on what key the player pressed
         this.playerx = this.playerx + this.dx;
         this.playery = this.playery + this.dy;
 
@@ -240,7 +267,7 @@ public class Background extends ApplicationAdapter {
     public void dispose() {
     }
 
-    // randomize the path
+    // randomize the path for the diamonds
     int random(int min, int max) {
         int random = (int) (Math.random() * 2);
         int entry;
@@ -254,7 +281,7 @@ public class Background extends ApplicationAdapter {
 
     // create the coordinates
     public class Coordinates {
-
+        // coordinates for the diamonds
         public int x;
         public int y;
 
