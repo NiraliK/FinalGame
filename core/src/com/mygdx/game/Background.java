@@ -56,10 +56,10 @@ public class Background extends ApplicationAdapter {
     // to add to the player's x and y coordinates
     private float dx;
     private float dy;
-    
+
     //image of the ball
     Texture img;
-    
+
     // point system
     // get the score of the game
     private int point;
@@ -161,7 +161,7 @@ public class Background extends ApplicationAdapter {
         this.dy = 30;
         // get the image of the player
         img = new Texture("ball.png");
-        
+
         // start the score at 0
         point = 0;
         // output what the score is
@@ -178,14 +178,46 @@ public class Background extends ApplicationAdapter {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //fill in the background
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-        
+
         // make sure the player is not off the screen to move the camera
+        // move the camera up slowly and increase the speed as the player gets higher
         if (dy >= 0 && dy >= (camera.position.y - 335)) {
             // move the camera with the player
             camera.position.y = (dy + 260) * 1;
             camera.position.y = camSpeed++;
         }
+        // increase the speed
+        if (dy >= 500 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
+            camera.position.y = (dy + 260) * 2;
+            camera.position.y = camSpeed++;
+        }
+        // increase the speed
+        if (dy >= 1000 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
+            camera.position.y = (dy + 260) * 3;
+            camera.position.y = camSpeed++;
+        }
+        // increase the speed
+        if (dy >= 1500 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
+            camera.position.y = (dy + 260) * 4;
+            camera.position.y = camSpeed++;
+        }
+        // increase the speed
+        if (dy >= 2000 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
+            camera.position.y = (dy + 260) * 5;
+            camera.position.y = camSpeed++;
+        }
+        // increase the speed
+        // max speed
+        if (dy >= 3000 && dy >= (camera.position.y - 335)) {
+            // move the camera with the player
+            camera.position.y = (dy + 260) * 6;
+            camera.position.y = camSpeed++;
+        }
+
         // update the camera
         camera.update();
         // set the camera in order to work
@@ -228,26 +260,135 @@ public class Background extends ApplicationAdapter {
         // movement for the player
         // if the right key is pressed
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            // move the ball diagonally
-            // move it to the right
-            this.dx += 1;
-            // move it up
-            this.dy += 1;
-            // draw the ball at that new location
-            batch.draw(img, dx, dy);
+
+            // ball movement
+            if (dy >= 0 && dy < 500) {
+                // move the ball diagonally
+                // move it to the right
+                this.dx += 1;
+                // move it up
+                this.dy += 1;
+                // draw the ball at that new location
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 500 && dy < 1000) {
+                // move it to the right
+                this.dx += 2;
+                // move it up
+                this.dy += 2;
+                // draw the ball at that new location
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 1000 && dy < 1500) {
+                // move it to the right
+                this.dx += 3;
+                // move it up
+                this.dy += 3;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 1500 && dy < 2000) {
+                // move it to the right
+                this.dx += 4;
+                // move it up
+                this.dy += 4;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+            
+            // increase the speed
+            if (dy >= 2000 && dy < 3000) {
+                // move it to the right
+                this.dx += 5;
+                // move it up
+                this.dy += 5;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed, this is the max speed
+            if (dy >= 3000) {
+                /// move it to the right
+                this.dx += 6;
+                // move it up
+                this.dy += 6;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+
             // add points to the score for every 100 coordinates it moves up
             point++;
             yourPointName = "Score: " + point / 100;
-            
+
             // movement for the player if the left key is pressed
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            // move diagonally to the left
-            // move to the left
-            this.dx += -1;
-            // move up 
-            this.dy += 1;
-            // draw the ball at the new position
-            batch.draw(img, dx, dy);
+
+            // start at a slow speed, increase the speed as the ball gets higher
+            if (dy >= 0 && dy < 500) {
+                // move the ball diagonally
+                // move it to the right
+                this.dx += -1;
+                // move it up
+                this.dy += 1;
+                // draw the ball at that new location
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 500 && dy < 1000) {
+                // move it to the right
+                this.dx += -2;
+                // move it up
+                this.dy += 2;
+                // draw the ball at that new location
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 1000 && dy < 1500) {
+                // move it to the right
+                this.dx += -3;
+                // move it up
+                this.dy += 3;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+            
+            // increase the speed
+            if (dy >= 1500 && dy < 2000) {
+                // move it to the right
+                this.dx += -4;
+                // move it up
+                this.dy += 4;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed
+            if (dy >= 2000 && dy < 3000) {
+                // move it to the right
+                this.dx += -5;
+                // move it up
+                this.dy += 5;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
+
+            // increase the speed, this is the max speed
+            if (dy >= 3000) {
+                /// move it to the right
+                this.dx += -6;
+                // move it up
+                this.dy += 6;
+                // draw the ball at the new position
+                batch.draw(img, dx, dy);
+            }
             // add points to the score for every 100 coordinates it moves up
             point++;
             yourPointName = "Score: " + point / 100;
@@ -256,14 +397,14 @@ public class Background extends ApplicationAdapter {
         font.setColor(0, 0, 0.2f, 1);
         // output the score
         font.draw(batch, yourPointName, (camera.position.x) - 370, (camera.position.y) + 275);
-        
+
         // move the player to it's new location depending on what key the player pressed
         this.playerx = this.playerx + this.dx;
         this.playery = this.playery + this.dy;
 
         // end the drawing
         batch.end();
-    
+
     }
 
     @Override
@@ -284,6 +425,7 @@ public class Background extends ApplicationAdapter {
 
     // create the coordinates
     public class Coordinates {
+
         // coordinates for the diamonds
         public int x;
         public int y;
