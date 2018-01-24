@@ -1,19 +1,24 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Background extends ApplicationAdapter {
+
     // texture atlas that will help load in the images from the big image
     // this was created from running the texture packer (in Desktop Launcher)
     private TextureAtlas atlas;
@@ -24,29 +29,29 @@ public class Background extends ApplicationAdapter {
     // current block's x and y positions
     private int currentY;
     private int currentX;
-    
+
     // width and size of the diamond
     private int currentH;
     private int currentW;
-    
+
     // width and height of screen
     public int width;
     public int height;
     // array of coordinates for every block added
     private Coordinates[] coordinates;
-        
+
     // camera and viewport
     private OrthographicCamera camera;
     private Viewport view;
     private int camSpeed;
-    
+
     // make a variable that shows the maximum number of squares on the screen at once
     private int maxOnScreen;
-    
+
     // x and y coordinates
     public int x;
     public int y;
-    
+
     // for the player movement
     private float playerx;
     private float playery;
@@ -54,19 +59,24 @@ public class Background extends ApplicationAdapter {
     private float dy;
     //image of the ball
     Texture img;
+    
+    private boolean endGame;
+    private int point;
+    private String yourPointName;
+    BitmapFont font;
 
     @Override
     public void create() {
-        
+
         // set up the camera and view
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // move the camera to the center
-        this.camera.position.set(width / 2, height / 2, 0);
+        this.camera.position.set(800 / 2, 600 / 2, 0);
         // make sure to apply the changes
         this.camera.update();
 
-        this.view = new FitViewport(width, height, camera);
+        this.view = new FitViewport(800, 600, camera);
         view.apply();
 
         // diamond image
@@ -77,27 +87,27 @@ public class Background extends ApplicationAdapter {
         // keep track of the diamonds
         int numberOfDiamonds = 10000;
         coordinates = new Coordinates[20000];
-        
+
         // path can be either up right or up left
         String path = "upRight";
-        
+
         // coordinates of first diamond (starting point)
         currentX = 400;
         currentY = 0;
-        
+
         // size of the diamond
         currentH = 100;
         currentW = 100;
-        
+
         // keeps track of how many diamond's are drawn
         int tracker = 0;
 
         // the max number of diamonds on the height of the screen divided by 50 because the blocks move up 50 y-coords every time
-        maxOnScreen = height/50;
-        
+        maxOnScreen = height / 50;
+
         // set the camera speed
         camSpeed = 0;
-        
+
         // coordinates to draw the diagram
         for (int i = maxOnScreen; i < numberOfDiamonds; i++) {
             int randomPath = random(1, 2);
@@ -142,13 +152,19 @@ public class Background extends ApplicationAdapter {
                 path = "upLeft";
             }
         }
-        
+
         this.playerx = playerx;
         this.playery = playery;
 
         this.dx = 420;
         this.dy = 30;
         img = new Texture("ball.png");
+        point = 0;
+        yourPointName = "Score: 0";
+        font = new BitmapFont();
+        batch = new SpriteBatch();
+        endGame = false;
+
     }
 
     @Override
@@ -159,34 +175,65 @@ public class Background extends ApplicationAdapter {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //fill in the background
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //make the blocks
+        
+        
+        //move the camera with the player
+        if (dy >= 0 && dy >= (camera.position.y - 335)) {
+            camera.position.y = (dy + 260) * 1;
+            camera.position.y = camSpeed++;
+            endGame = false;
+        }
 
-        //drawing the background 
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
+        int ballX = (int) ((img.getWidth() / 2) + dx);
+        int ballY = (int) ((img.getHeight() / 2) + dy);
+        Coordinates tile = new Coordinates(-10, -10);
+
+        for (int i = 0; i < coordinates.length; i++) {
+            if (ballX >= coordinates[i].x && ballX <= coordinates[i].x + 100 && ballY >= coordinates[i].y && ballY <= coordinates[i].y + 100) {
+                tile.x = coordinates[i].x;
+                tile.y = coordinates[i].y;
+                break;
+            }
+        }
+
+        //drawing the background and player
         //begin the drawing here
         batch.begin();
         // use a for loop to go through the positions of the blocks
-        for (int i = 0; i < coordinates.length; i++) {
+        for (int i = maxOnScreen; i < coordinates.length; i++) {
             // make sure the coordinates are not null
             if (coordinates[i] != null) {
                 // drawing the blocks 
                 batch.draw(diamond, coordinates[i].x, coordinates[i].y, currentH, currentW);
-                }
             }
-        batch.draw(img, dx, dy);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            this.dx += 2;
-            this.dy += 2;
-            batch.draw(img, dx, dy);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            this.dx += -2;
-            this.dy += 2;
-            batch.draw(img, dx, dy);
         }
+
+        batch.draw(img, dx, dy);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            this.dx += 1;
+            this.dy += 1;
+            batch.draw(img, dx, dy);
+            point++;
+            yourPointName = "Score: " + point / 100;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            this.dx += -1;
+            this.dy += 1;
+            batch.draw(img, dx, dy);
+            point++;
+            yourPointName = "Score: " + point / 100;
+        }
+        font.setColor(0, 0, 0.2f, 1);
+        font.draw(batch, yourPointName, (camera.position.x) - 370, (camera.position.y) + 275);
         this.playerx = this.playerx + this.dx;
-                this.playery = this.playery + this.dy;
+        this.playery = this.playery + this.dy;
+
         // end the drawing
         batch.end();
-
+    
     }
 
     @Override
@@ -207,6 +254,7 @@ public class Background extends ApplicationAdapter {
 
     // create the coordinates
     public class Coordinates {
+
         public int x;
         public int y;
 
@@ -215,5 +263,5 @@ public class Background extends ApplicationAdapter {
             y = Y;
         }
     }
-    
+
 }
