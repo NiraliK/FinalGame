@@ -14,14 +14,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Background extends ApplicationAdapter {
-
-    // texture atlas that will help load in the images from the big image
-    // this was created from running the texture packer (in Desktop Launcher)
-    private TextureAtlas atlas;
     // sprite batch
     private SpriteBatch batch;
+    // texture atlas that will help load in the images from the big image
+    // this was created from running the texture packer (in Desktop Launcher)
+    
+    private TextureAtlas atlas;
     // diamond image as the blocks
     private TextureRegion diamond;
+   
     // current block's x and y positions
     private int currentY;
     private int currentX;
@@ -33,6 +34,7 @@ public class Background extends ApplicationAdapter {
     // width and height of screen
     public int width;
     public int height;
+    
     // array of coordinates for every block added
     private Coordinates[] coordinates;
 
@@ -230,8 +232,8 @@ public class Background extends ApplicationAdapter {
         int ballY = (int) ((img.getHeight() / 2) + dy);
         // get the coordinates of the diamonds
         Coordinates tile = new Coordinates(-10, -10);
-
-        // check for any collisons
+        
+       // check for any collisons
         for (int i = 0; i < coordinates.length; i++) {
             // make sure the ball is on top of the diamond
             if (ballX >= coordinates[i].x && ballX <= coordinates[i].x + 100 && ballY >= coordinates[i].y && ballY <= coordinates[i].y + 100) {
@@ -241,6 +243,7 @@ public class Background extends ApplicationAdapter {
                 break;
             }
         }
+       
 
         //drawing the background, player and score
         //begin the drawing here
